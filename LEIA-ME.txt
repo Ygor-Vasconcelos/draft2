@@ -1,0 +1,18 @@
+ACAMPA 2K26 - DRAFT
+
+VERSAO 8
+
+REGRAS ATUAIS DA EQUIPE 4 (BENTO):
+1) Ygor x Moises
+2) Victor (Vitinho) x Davi
+3) JV (Joao Vitor) x JP
+
+Os seis jogadores Ygor, Moises, Victor, Davi, JV e JP ficam ocultos ate a Equipe 4.
+Depois que a Equipe 4 terminar, qualquer um deles que NAO tiver sido escolhido volta
+para o pool normal e pode aparecer nas Equipes 5 e 6.
+
+Os niveis continuam ocultos na tela.
+
+AREA SECRETA:
+No inicio do script.js existe SECRET_RULES. E ali que o organizador pode alterar
+bloqueios, reservas e confrontos especiais.

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ACAMPA 2K26">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>ACAMPA 2K26 — Draft</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="embers"></div>
+  <header class="topbar">
+    <img src="assets/logo.png" alt="Acampa 2K26" onerror="this.style.display='none'">
+    <div class="top-title">ACAMPA <b>2K26</b></div>
+    <div class="top-sub">DRAFT DE FUTEBOL</div>
+  </header>
+
+  <main>
+    <section id="screen-home" class="screen active">
+      <div class="hero">
+        <div class="hero-kicker">14–16 AGOSTO 2026</div>
+        <h1>ACAMPA<br><span>2K26</span></h1>
+        <p>O DRAFT VAI COMEÇAR</p>
+        <button id="btn-start" class="primary">INICIAR CAMPEONATO</button>
+      </div>
+    </section>
+
+    <section id="screen-goalkeepers" class="screen">
+      <div class="section-kicker">ABERTURA</div>
+      <h2>GOLEIROS</h2>
+      <p class="hint">Os goleiros serão fixos durante todo o campeonato.</p>
+      <div id="gk-stage" class="card-row"></div>
+      <button id="btn-gk-reveal" class="primary">REVELAR GOLEIROS</button>
+      <button id="btn-gk-continue" class="primary hidden">CONTINUAR</button>
+    </section>
+
+    <section id="screen-captain" class="screen">
+      <div class="section-kicker">DEFININDO CAPITÃO...</div>
+      <h2 id="captain-team-title">EQUIPE 1</h2>
+      <div id="captain-card-stage" class="captain-stage"></div>
+      <button id="btn-captain-reveal" class="primary">REVELAR CAPITÃO</button>
+      <button id="btn-captain-continue" class="primary hidden">COMEÇAR ESCOLHAS</button>
+    </section>
+
+    <section id="screen-draft" class="screen">
+      <div class="draft-head">
+        <div>
+          <div class="section-kicker" id="draft-team-label">EQUIPE 1</div>
+          <h2 id="draft-title">ESCOLHA 1 DE 4</h2>
+          <div id="draft-message" class="hint">Primeiro revele as duas opções.</div>
+        </div>
+      </div>
+      <div id="choices" class="card-row choices"></div>
+      <button id="btn-reveal-choices" class="primary">REVELAR OPÇÕES</button>
+    </section>
+
+    <section id="screen-team" class="screen">
+      <div class="section-kicker">EQUIPE FORMADA</div>
+      <h2 id="team-title">EQUIPE 1</h2>
+      <div id="team-cards" class="team-grid"></div>
+      <button id="btn-next-team" class="primary">PRÓXIMA EQUIPE</button>
+    </section>
+
+    <section id="screen-final" class="screen">
+      <div class="section-kicker">DRAFT FINALIZADO</div>
+      <h2>AS EQUIPES ESTÃO PRONTAS</h2>
+      <div id="all-teams" class="all-teams"></div>
+      <button id="btn-formations" class="primary">VER FORMAÇÕES</button>
+    </section>
+
+    <section id="screen-formations" class="screen">
+      <div class="section-kicker">CAMPEONATO</div>
+      <h2>FORMAÇÕES</h2>
+      <div id="formation-tabs" class="tabs"></div>
+      <div id="formation-field" class="field"></div>
+      <button id="btn-restart" class="secondary">REINICIAR DRAFT</button>
+    </section>
+  </main>
+  <script src="script.js"></script>
+<script src="pwa.js"></script>
+</body>
+</html>

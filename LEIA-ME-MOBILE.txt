@@ -1,0 +1,18 @@
+ACAMPA 2K26 — versão otimizada para smartphone e tablet
+
+O projeto continua sendo HTML/CSS/JavaScript, mas agora foi ajustado para:
+- layout mobile-first;
+- duas cartas lado a lado no celular sem estourar a tela;
+- botões maiores para toque;
+- telas e textos adaptáveis a diferentes tamanhos;
+- suporte melhor a tablets;
+- campo de formação responsivo;
+- suporte básico a instalação como PWA (Adicionar à Tela de Início).
+
+Para usar:
+1. Extraia o ZIP.
+2. Hospede a pasta em um servidor HTTPS (GitHub Pages, Netlify, Vercel etc.).
+3. Abra o endereço no celular/tablet.
+4. No navegador, use "Adicionar à Tela de Início" para abrir como aplicativo.
+
+Observação: APK/IPA nativo não é necessário para essa etapa. Esta versão é a base web responsiva e instalável.
