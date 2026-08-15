@@ -1,4 +1,4 @@
-const CACHE = "acampa-2k26-v10";
+const CACHE = "acampa-2k26-v11";
 
 const ASSETS = [
   "./",
