@@ -14,17 +14,16 @@ const LABEL = {
   capitao: "CAPITÃO"
 };
 
+
 // ================================================================
-// 🔒 ÁREA SECRETA DE CONFIGURAÇÃO — ORGANIZADOR
+// 🔒 ÁREA SECRETA DE CONFIGURAÇÃO
 // ================================================================
 
 const SECRET_RULES = {
 
-  // ================================================================
-  // 🔒 JOGADORES RESERVADOS PARA A EQUIPE 2
-  //
-  // Antes da Equipe 2 eles ficam escondidos.
-  // ================================================================
+  // ==============================================================
+  // 🔒 JOGADORES SECRETOS DA EQUIPE 2
+  // ==============================================================
 
   reservedPlayersByTeam: {
     2: [
@@ -37,15 +36,10 @@ const SECRET_RULES = {
     ]
   },
 
-  // ================================================================
+
+  // ==============================================================
   // 🔒 CONFRONTOS ESPECIAIS DA EQUIPE 2
-  //
-  // 1ª escolha: Ygor x Moises
-  // 2ª escolha: Victor x Davi
-  // 3ª escolha: JV x JP
-  //
-  // Na 4ª escolha volta à lógica normal.
-  // ================================================================
+  // ==============================================================
 
   specialPairsByTeam: {
     2: [
@@ -55,23 +49,20 @@ const SECRET_RULES = {
     ]
   },
 
-  specialLastOptionsByTeam: {
-    2: []
-  },
 
-  // ================================================================
-  // 🔒 EQUIPE 6 — JOGADORES FIXOS
+  // ==============================================================
+  // 🔒 JOGADORES FIXOS DA EQUIPE 6
   //
-  // Eles nunca entram no sorteio.
-  // ================================================================
+  // Allan NÃO está aqui porque ele é somente capitão.
+  // ==============================================================
 
   fixedTeam6Players: [
-    "Allan",
     "Murillo",
     "João Gui",
     "Bellato",
     "Vinao"
   ]
+
 };
 
 
@@ -80,10 +71,6 @@ const SECRET_RULES = {
 // ================================================================
 
 const CONFIG = {
-
-  // ================================================================
-  // GOLEIROS
-  // ================================================================
 
   goalkeepers: [
     {
@@ -96,40 +83,37 @@ const CONFIG = {
     }
   ],
 
-  // ================================================================
+
+  // ==============================================================
   // CAPITÃES
   //
   // Equipe 1 = Pedro
   // Equipe 2 = Bento
-  // Equipe 3 = Coutinho
-  // Equipes 4, 5 e 6 = sorteados entre os restantes
+  // Equipe 3 = Abner
+  // Equipe 4 = Gordo
+  // Equipe 5 = Henrique
+  // Equipe 6 = Allan
   //
-  // Allan e Murillo NÃO são capitães.
-  // ================================================================
+  // Allan é somente capitão.
+  // Coutinho é jogador CRAQUE.
+  // ==============================================================
 
   captains: [
     "Pedro",
     "Bento",
-    "Coutinho",
     "Abner",
     "Gordo",
-    "Henrique"
+    "Henrique",
+    "Allan"
   ],
 
-  // ================================================================
+
+  // ==============================================================
   // JOGADORES
-  //
-  // IMPORTANTE:
-  // Pedro e Coutinho NÃO estão aqui porque são capitães.
-  //
-  // Allan, Murillo, João Gui, Bellato e Vinao
-  // estão aqui somente para serem usados na Equipe 6,
-  // mas serão retirados do pool no reset().
-  // ================================================================
+  // ==============================================================
 
   players: [
 
-    // RUINS
     ["JP", "ruim"],
     ["Moises", "ruim"],
     ["Vinao", "ruim"],
@@ -137,7 +121,6 @@ const CONFIG = {
     ["Bellato", "ruim"],
     ["Danilo", "ruim"],
 
-    // BONS
     ["Zanardi", "bom"],
     ["Ygor", "bom"],
     ["JV", "bom"],
@@ -151,17 +134,23 @@ const CONFIG = {
     ["Cadu", "bom"],
     ["Anonimo", "bom"],
 
+    // ============================================================
     // CRAQUES
+    // ============================================================
+
     ["Victor", "craque"],
     ["Lucas Rocha", "craque"],
+    ["Coutinho", "craque"],
     ["João Gui", "craque"],
     ["Arthur", "craque"],
 
-    // ================================================================
-    // 🔒 FIXOS DA EQUIPE 6
-    // ================================================================
+    // ============================================================
+    // FIXOS DA EQUIPE 6
+    //
+    // Allan NÃO entra aqui.
+    // Ele é somente capitão.
+    // ============================================================
 
-    ["Allan", "bom"],
     ["Murillo", "bom"]
 
   ].map(([name, level]) => ({
@@ -172,10 +161,6 @@ const CONFIG = {
 };
 
 
-// ================================================================
-// ESTADO
-// ================================================================
-
 let state;
 
 
@@ -184,31 +169,47 @@ let state;
 // ================================================================
 
 function slug(s) {
+
   return s
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/\s+/g, "-");
+
 }
 
 
 function shuffle(arr) {
+
   const a = [...arr];
 
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
 
-    [a[i], a[j]] = [a[j], a[i]];
+    const j =
+      Math.floor(
+        Math.random() * (i + 1)
+      );
+
+    [a[i], a[j]] =
+      [a[j], a[i]];
+
   }
 
   return a;
+
 }
 
 
 function pickRandom(arr) {
+
+  if (!arr.length) return null;
+
   return arr[
-    Math.floor(Math.random() * arr.length)
+    Math.floor(
+      Math.random() * arr.length
+    )
   ];
+
 }
 
 
@@ -217,10 +218,12 @@ function show(name) {
   document
     .querySelectorAll(".screen")
     .forEach(
-      s => s.classList.remove("active")
+      s =>
+        s.classList.remove("active")
     );
 
-  const screen = $("screen-" + name);
+  const screen =
+    $("screen-" + name);
 
   if (screen) {
     screen.classList.add("active");
@@ -230,6 +233,7 @@ function show(name) {
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
@@ -239,31 +243,32 @@ function show(name) {
 
 function reset() {
 
-  // ================================================================
-  // RETIRA OS FIXOS DA EQUIPE 6 DO POOL
-  // ================================================================
-
   const fixedNames =
     SECRET_RULES.fixedTeam6Players;
 
+
+  // --------------------------------------------------------------
+  // Remove os jogadores fixos da Equipe 6 do pool
+  // --------------------------------------------------------------
+
   const normalPlayers =
     CONFIG.players.filter(
-      p => !fixedNames.includes(p.name)
+      p =>
+        !fixedNames.includes(p.name)
     );
 
-  // ================================================================
-  // CRIA ESTADO
-  // ================================================================
 
   state = {
 
-    // Jogadores que podem ser sorteados
-    pool: shuffle(normalPlayers),
+    // Pool utilizado pelas Equipes 1 a 5
+    pool:
+      shuffle(normalPlayers),
 
     // Jogadores fixos da Equipe 6
     fixedTeam6:
       CONFIG.players.filter(
-        p => fixedNames.includes(p.name)
+        p =>
+          fixedNames.includes(p.name)
       ),
 
     captains: [],
@@ -283,33 +288,23 @@ function reset() {
     teams: [],
 
     gkRevealed: false
+
   };
 
-  // ================================================================
-  // CAPITÃES FIXOS
-  //
-  // Equipe 1 = Pedro
-  // Equipe 2 = Bento
-  // Equipe 3 = Coutinho
-  // ================================================================
 
-  const others = shuffle(
-    CONFIG.captains.filter(
-      c =>
-        c !== "Pedro" &&
-        c !== "Bento" &&
-        c !== "Coutinho"
-    )
-  );
+  // ==============================================================
+  // CAPITÃES FIXOS
+  // ==============================================================
 
   state.captains = [
-    "Pedro",
-    "Bento",
-    "Coutinho",
-    others[0],
-    others[1],
-    others[2]
+    "Pedro",      // Equipe 1
+    "Bento",      // Equipe 2
+    "Abner",      // Equipe 3
+    "Gordo",      // Equipe 4
+    "Henrique",   // Equipe 5
+    "Allan"       // Equipe 6
   ];
+
 }
 
 
@@ -320,20 +315,32 @@ function reset() {
 function playSound(name) {
 
   const map = {
-    reveal: "assets/sounds/reveal.mp3",
-    pick: "assets/sounds/pick.mp3",
-    craque: "assets/sounds/craque.mp3"
+
+    reveal:
+      "assets/sounds/reveal.mp3",
+
+    pick:
+      "assets/sounds/pick.mp3",
+
+    craque:
+      "assets/sounds/craque.mp3"
+
   };
 
-  const src = map[name];
+  const src =
+    map[name];
 
   if (!src) return;
 
-  const a = new Audio(src);
+  const a =
+    new Audio(src);
 
-  a.volume = 0.75;
+  a.volume = .75;
 
-  a.play().catch(() => {});
+  a.play().catch(
+    () => {}
+  );
+
 }
 
 
@@ -347,32 +354,42 @@ function normalizeCardImage(img) {
     img.dataset.normalized === "1" ||
     !img.complete ||
     !img.naturalWidth
-  ) {
-    return;
-  }
+  ) return;
+
 
   try {
 
-    const w = img.naturalWidth;
-    const h = img.naturalHeight;
+    const w =
+      img.naturalWidth;
 
-    const c = document.createElement("canvas");
+    const h =
+      img.naturalHeight;
+
+
+    const c =
+      document.createElement(
+        "canvas"
+      );
 
     c.width = w;
     c.height = h;
 
-    const ctx = c.getContext(
-      "2d",
-      {
-        willReadFrequently: true
-      }
-    );
+
+    const ctx =
+      c.getContext(
+        "2d",
+        {
+          willReadFrequently: true
+        }
+      );
+
 
     ctx.drawImage(
       img,
       0,
       0
     );
+
 
     const d =
       ctx.getImageData(
@@ -382,10 +399,12 @@ function normalizeCardImage(img) {
         h
       ).data;
 
+
     let minX = w;
     let minY = h;
     let maxX = -1;
     let maxY = -1;
+
 
     for (let y = 0; y < h; y++) {
 
@@ -397,52 +416,67 @@ function normalizeCardImage(img) {
           ] > 8
         ) {
 
-          minX = Math.min(
-            minX,
-            x
-          );
+          minX =
+            Math.min(
+              minX,
+              x
+            );
 
-          maxX = Math.max(
-            maxX,
-            x
-          );
+          maxX =
+            Math.max(
+              maxX,
+              x
+            );
 
-          minY = Math.min(
-            minY,
-            y
-          );
+          minY =
+            Math.min(
+              minY,
+              y
+            );
 
-          maxY = Math.max(
-            maxY,
-            y
-          );
+          maxY =
+            Math.max(
+              maxY,
+              y
+            );
+
         }
+
       }
+
     }
+
 
     if (maxX < 0) return;
 
+
     const pad = 2;
 
-    minX = Math.max(
-      0,
-      minX - pad
-    );
 
-    minY = Math.max(
-      0,
-      minY - pad
-    );
+    minX =
+      Math.max(
+        0,
+        minX - pad
+      );
 
-    maxX = Math.min(
-      w - 1,
-      maxX + pad
-    );
+    minY =
+      Math.max(
+        0,
+        minY - pad
+      );
 
-    maxY = Math.min(
-      h - 1,
-      maxY + pad
-    );
+    maxX =
+      Math.min(
+        w - 1,
+        maxX + pad
+      );
+
+    maxY =
+      Math.min(
+        h - 1,
+        maxY + pad
+      );
+
 
     const cw =
       maxX - minX + 1;
@@ -450,11 +484,15 @@ function normalizeCardImage(img) {
     const ch =
       maxY - minY + 1;
 
+
     const out =
-      document.createElement("canvas");
+      document.createElement(
+        "canvas"
+      );
 
     out.width = 707;
     out.height = 1000;
+
 
     out
       .getContext("2d")
@@ -470,18 +508,23 @@ function normalizeCardImage(img) {
         1000
       );
 
+
     img.src =
       out.toDataURL(
         "image/png"
       );
 
-    img.dataset.normalized = "1";
+    img.dataset.normalized =
+      "1";
+
 
   } catch (e) {
 
-    img.dataset.normalized = "1";
+    img.dataset.normalized =
+      "1";
 
   }
+
 }
 
 
@@ -491,58 +534,92 @@ function normalizeCardImage(img) {
 
 function makeCard(
   person,
-  { choice = false } = {}
+  {
+    choice = false
+  } = {}
 ) {
 
   const wrap =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   wrap.className =
     "card-wrap" +
-    (choice ? " choice" : "");
+    (
+      choice
+        ? " choice"
+        : ""
+    );
+
 
   const inner =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   inner.className =
     "card-inner";
 
+
   const back =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   back.className =
     "face back";
 
+
   const front =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   front.className =
     "face front";
 
+
   const img =
-    document.createElement("img");
+    document.createElement(
+      "img"
+    );
 
-  img.src = person.image;
+  img.src =
+    person.image;
 
-  img.alt = person.name;
+  img.alt =
+    person.name;
+
 
   img.onload =
-    () => normalizeCardImage(img);
+    () =>
+      normalizeCardImage(img);
+
 
   img.onerror = () => {
 
-    img.style.display = "none";
+    img.style.display =
+      "none";
+
 
     const fb =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
-    fb.className = "fallback";
+    fb.className =
+      "fallback";
+
 
     fb.innerHTML =
       `<strong>${person.name}</strong>`;
 
+
     front.appendChild(fb);
+
   };
+
 
   front.appendChild(img);
 
@@ -554,6 +631,7 @@ function makeCard(
   wrap.appendChild(inner);
 
   return wrap;
+
 }
 
 
@@ -565,7 +643,9 @@ function revealCard(card) {
 
   if (
     card &&
-    !card.classList.contains("revealed")
+    !card.classList.contains(
+      "revealed"
+    )
   ) {
 
     card.classList.add(
@@ -573,7 +653,9 @@ function revealCard(card) {
     );
 
     playSound("reveal");
+
   }
+
 }
 
 
@@ -585,7 +667,10 @@ function start() {
 
   reset();
 
-  $("gk-stage").innerHTML = "";
+
+  $("gk-stage").innerHTML =
+    "";
+
 
   CONFIG.goalkeepers.forEach(
     g => {
@@ -602,44 +687,65 @@ function start() {
             }
           )
         );
+
     }
   );
 
+
   $("btn-gk-reveal")
-    .classList.remove("hidden");
+    .classList.remove(
+      "hidden"
+    );
+
 
   $("btn-gk-continue")
-    .classList.add("hidden");
+    .classList.add(
+      "hidden"
+    );
+
 
   show("goalkeepers");
+
 }
 
 
-$("btn-start").onclick = start;
+$("btn-start").onclick =
+  start;
 
 
 // ================================================================
 // GOLEIROS
 // ================================================================
 
-$("btn-gk-reveal").onclick = () => {
+$("btn-gk-reveal").onclick =
+  () => {
 
-  document
-    .querySelectorAll(
-      "#gk-stage .card-wrap"
-    )
-    .forEach(revealCard);
+    document
+      .querySelectorAll(
+        "#gk-stage .card-wrap"
+      )
+      .forEach(
+        revealCard
+      );
 
-  $("btn-gk-reveal")
-    .classList.add("hidden");
 
-  $("btn-gk-continue")
-    .classList.remove("hidden");
-};
+    $("btn-gk-reveal")
+      .classList.add(
+        "hidden"
+      );
+
+
+    $("btn-gk-continue")
+      .classList.remove(
+        "hidden"
+      );
+
+  };
 
 
 $("btn-gk-continue").onclick =
-  () => showCaptain();
+  () =>
+    showCaptain();
 
 
 // ================================================================
@@ -651,61 +757,91 @@ function showCaptain() {
   const n =
     state.currentTeamIndex + 1;
 
+
   state.currentCaptain =
     state.captains[
       state.currentTeamIndex
     ];
 
+
   $("captain-team-title")
     .textContent =
       `EQUIPE ${n}`;
 
+
   $("captain-card-stage")
-    .innerHTML = "";
+    .innerHTML =
+      "";
+
 
   const card =
     makeCard({
-      name: state.currentCaptain,
-      level: "capitao",
+
+      name:
+        state.currentCaptain,
+
+      level:
+        "capitao",
+
       image:
         `assets/captains/${slug(
           state.currentCaptain
         )}.png`
+
     });
+
 
   $("captain-card-stage")
     .appendChild(card);
 
+
   $("btn-captain-reveal")
-    .classList.remove("hidden");
+    .classList.remove(
+      "hidden"
+    );
+
 
   $("btn-captain-continue")
-    .classList.add("hidden");
+    .classList.add(
+      "hidden"
+    );
+
 
   show("captain");
+
 }
 
 
-$("btn-captain-reveal").onclick = () => {
+$("btn-captain-reveal").onclick =
+  () => {
 
-  const c =
-    $("captain-card-stage")
-      .querySelector(
-        ".card-wrap"
+    const c =
+      $("captain-card-stage")
+        .querySelector(
+          ".card-wrap"
+        );
+
+
+    revealCard(c);
+
+
+    $("btn-captain-reveal")
+      .classList.add(
+        "hidden"
       );
 
-  revealCard(c);
 
-  $("btn-captain-reveal")
-    .classList.add("hidden");
+    $("btn-captain-continue")
+      .classList.remove(
+        "hidden"
+      );
 
-  $("btn-captain-continue")
-    .classList.remove("hidden");
-};
+  };
 
 
 $("btn-captain-continue").onclick =
-  () => startTeam();
+  () =>
+    startTeam();
 
 
 // ================================================================
@@ -717,6 +853,7 @@ function startTeam() {
   const n =
     state.currentTeamIndex + 1;
 
+
   state.currentTeam = {
 
     number: n,
@@ -725,22 +862,43 @@ function startTeam() {
       state.currentCaptain,
 
     players: []
+
   };
+
 
   state.choiceNumber = 0;
 
-  // ================================================================
-  // EQUIPE 6 = FIXA
-  // ================================================================
+
+  // ==============================================================
+  // EQUIPE 6
+  // ==============================================================
 
   if (n === 6) {
 
     finishTeam6();
 
     return;
+
   }
 
+
+  // ==============================================================
+  // EQUIPE 5
+  //
+  // Recebe automaticamente todo o restante.
+  // ==============================================================
+
+  if (n === 5) {
+
+    finishTeam5();
+
+    return;
+
+  }
+
+
   showDraftChoice();
+
 }
 
 
@@ -753,10 +911,14 @@ function remainingNeed(
   level
 ) {
 
-  return NEEDS[level] -
+  return (
+    NEEDS[level] -
     team.players.filter(
-      p => p.level === level
-    ).length;
+      p =>
+        p.level === level
+    ).length
+  );
+
 }
 
 
@@ -766,49 +928,63 @@ function remainingNeed(
 
 function availablePool() {
 
-  return state.pool.filter(p => {
+  return state.pool.filter(
+    p => {
 
-    const teamNumber =
-      state.currentTeam.number;
+      const teamNumber =
+        state.currentTeam.number;
 
-    // ================================================================
-    // JOGADORES SECRETOS DA EQUIPE 2
-    // ================================================================
 
-    for (
-      const [
-        team,
-        players
-      ]
-      of Object.entries(
-        SECRET_RULES.reservedPlayersByTeam
-      )
-    ) {
+      // ----------------------------------------------------------
+      // Jogadores secretos da Equipe 2
+      // ----------------------------------------------------------
+
+      for (
+        const [
+          team,
+          players
+        ]
+        of Object.entries(
+          SECRET_RULES
+            .reservedPlayersByTeam
+        )
+      ) {
+
+        if (
+          teamNumber <
+            Number(team) &&
+          players.includes(
+            p.name
+          )
+        ) {
+
+          return false;
+
+        }
+
+      }
+
+
+      // ----------------------------------------------------------
+      // Segurança: jogadores fixos da Equipe 6
+      // ----------------------------------------------------------
 
       if (
-        teamNumber < Number(team) &&
-        players.includes(p.name)
+        SECRET_RULES
+          .fixedTeam6Players
+          .includes(p.name)
       ) {
 
         return false;
+
       }
+
+
+      return true;
+
     }
+  );
 
-    // ================================================================
-    // SEGURANÇA: FIXOS DA EQUIPE 6
-    // ================================================================
-
-    if (
-      SECRET_RULES
-        .fixedTeam6Players
-        .includes(p.name)
-    ) {
-
-      return false;
-    }
-
-    return true;
-  });
 }
 
 
@@ -826,31 +1002,36 @@ function validForTeam(
       team,
       p.level
     ) > 0;
+
 }
 
 
-function remainingByLevel(level) {
+function remainingByLevel(
+  level
+) {
 
   return availablePool()
     .filter(
-      p => p.level === level
+      p =>
+        p.level === level
     );
+
 }
 
 
 function eligibleLevels(team) {
 
-  return Object.keys(
-    NEEDS
-  ).filter(
-    l =>
-      remainingNeed(
-        team,
-        l
-      ) > 0 &&
-      remainingByLevel(l)
-        .length > 0
-  );
+  return Object.keys(NEEDS)
+    .filter(
+      l =>
+        remainingNeed(
+          team,
+          l
+        ) > 0 &&
+        remainingByLevel(l)
+          .length > 0
+    );
+
 }
 
 
@@ -863,35 +1044,47 @@ function chooseLevel(team) {
   const levels =
     eligibleLevels(team);
 
-  if (
-    levels.length === 1
-  ) {
+
+  if (!levels.length) {
+
+    return null;
+
+  }
+
+
+  if (levels.length === 1) {
 
     return levels[0];
+
   }
+
 
   const scored =
     levels
-      .map(l => ({
+      .map(
+        l => ({
 
-        l,
+          l,
 
-        score:
-          remainingByLevel(l)
-            .length -
-          remainingNeed(
-            team,
-            l
-          )
+          score:
+            remainingByLevel(l)
+              .length -
+            remainingNeed(
+              team,
+              l
+            )
 
-      }))
+        })
+      )
       .sort(
         (a, b) =>
           a.score - b.score
       );
 
+
   const best =
     scored[0].score;
+
 
   return pickRandom(
     scored
@@ -900,9 +1093,11 @@ function chooseLevel(team) {
           x.score === best
       )
       .map(
-        x => x.l
+        x =>
+          x.l
       )
   );
+
 }
 
 
@@ -915,8 +1110,17 @@ function normalOptions(team) {
   const level =
     chooseLevel(team);
 
+
+  if (!level) {
+
+    return [];
+
+  }
+
+
   const candidates =
     remainingByLevel(level);
+
 
   if (
     candidates.length >= 2
@@ -924,8 +1128,13 @@ function normalOptions(team) {
 
     return shuffle(
       candidates
-    ).slice(0, 2);
+    ).slice(
+      0,
+      2
+    );
+
   }
+
 
   if (
     candidates.length === 1
@@ -945,20 +1154,24 @@ function normalOptions(team) {
           )
       );
 
+
     return shuffle(
       [
         candidates[0],
         alt
       ].filter(Boolean)
     );
+
   }
 
+
   return [];
+
 }
 
 
 // ================================================================
-// 🔒 OPÇÕES SECRETAS DA EQUIPE 2
+// OPÇÕES SECRETAS DA EQUIPE 2
 // ================================================================
 
 function team2Options(team) {
@@ -966,15 +1179,17 @@ function team2Options(team) {
   const round =
     state.choiceNumber;
 
+
   const pairs =
     SECRET_RULES
       .specialPairsByTeam[
         team.number
       ] || [];
 
-  // ================================================================
-  // 1ª, 2ª E 3ª ESCOLHAS
-  // ================================================================
+
+  // --------------------------------------------------------------
+  // 1ª, 2ª e 3ª escolhas
+  // --------------------------------------------------------------
 
   if (
     round <= pairs.length
@@ -984,6 +1199,7 @@ function team2Options(team) {
       pairs[
         round - 1
       ];
+
 
     let options =
       pair
@@ -1003,9 +1219,10 @@ function team2Options(team) {
             )
         );
 
-    // ================================================================
-    // SEGURANÇA
-    // ================================================================
+
+    // ------------------------------------------------------------
+    // Segurança
+    // ------------------------------------------------------------
 
     while (
       options.length < 2
@@ -1026,32 +1243,39 @@ function team2Options(team) {
               )
           );
 
-      if (
-        !candidates.length
-      ) {
+
+      if (!candidates.length) {
 
         break;
+
       }
+
 
       options.push(
         pickRandom(
           candidates
         )
       );
+
     }
+
 
     return shuffle(
       options
-    ).slice(0, 2);
+    ).slice(
+      0,
+      2
+    );
+
   }
 
-  // ================================================================
-  // 4ª ESCOLHA
-  //
-  // Volta ao sistema normal.
-  // ================================================================
+
+  // --------------------------------------------------------------
+  // 4ª escolha da Equipe 2
+  // --------------------------------------------------------------
 
   return normalOptions(team);
+
 }
 
 
@@ -1064,69 +1288,100 @@ function showDraftChoice() {
   const team =
     state.currentTeam;
 
+
   state.choiceNumber++;
 
   state.choiceRevealed =
     false;
 
+
   $("draft-team-label")
     .textContent =
       `EQUIPE ${team.number} — ${team.captain}`;
+
 
   $("draft-title")
     .textContent =
       `ESCOLHA ${state.choiceNumber} DE 4`;
 
+
   renderNeeds(team);
 
-  // ================================================================
-  // EQUIPE 2 USA LÓGICA SECRETA
-  // ================================================================
 
   state.choiceOptions =
     team.number === 2
       ? team2Options(team)
       : normalOptions(team);
 
+
+  // ==============================================================
+  // SEGURANÇA CONTRA TRAVAMENTO
+  // ==============================================================
+
+  if (
+    state.choiceOptions.length === 0
+  ) {
+
+    showTeamSummary();
+
+    return;
+
+  }
+
+
   const area =
     $("choices");
 
-  area.innerHTML = "";
 
-  state.choiceOptions.forEach(
-    p => {
+  area.innerHTML =
+    "";
 
-      const c =
-        makeCard(
-          p,
-          {
-            choice: true
-          }
-        );
 
-      c.classList.add(
-        "not-selectable"
-      );
+  state.choiceOptions
+    .forEach(
+      p => {
 
-      c.onclick =
-        () =>
-          choosePlayer(
+        const c =
+          makeCard(
             p,
-            c
+            {
+              choice: true
+            }
           );
 
-      area.appendChild(c);
-    }
-  );
+
+        c.classList.add(
+          "not-selectable"
+        );
+
+
+        c.onclick =
+          () =>
+            choosePlayer(
+              p,
+              c
+            );
+
+
+        area.appendChild(c);
+
+      }
+    );
+
 
   $("draft-message")
     .textContent =
       "Toque em REVELAR OPÇÕES para descobrir os dois jogadores.";
 
+
   $("btn-reveal-choices")
-    .classList.remove("hidden");
+    .classList.remove(
+      "hidden"
+    );
+
 
   show("draft");
+
 }
 
 
@@ -1135,7 +1390,9 @@ function showDraftChoice() {
 // ================================================================
 
 function renderNeeds(team) {
+
   return;
+
 }
 
 
@@ -1143,35 +1400,45 @@ function renderNeeds(team) {
 // REVELAR OPÇÕES
 // ================================================================
 
-$("btn-reveal-choices").onclick = () => {
+$("btn-reveal-choices").onclick =
+  () => {
 
-  state.choiceRevealed =
-    true;
+    state.choiceRevealed =
+      true;
 
-  document
-    .querySelectorAll(
-      "#choices .card-wrap"
-    )
-    .forEach(c => {
 
-      c.classList.remove(
-        "not-selectable"
+    document
+      .querySelectorAll(
+        "#choices .card-wrap"
+      )
+      .forEach(
+        c => {
+
+          c.classList.remove(
+            "not-selectable"
+          );
+
+          c.classList.add(
+            "selectable"
+          );
+
+          revealCard(c);
+
+        }
       );
 
-      c.classList.add(
-        "selectable"
-      );
 
-      revealCard(c);
-    });
-
-  $("draft-message")
-    .textContent =
+    $("draft-message")
+      .textContent =
       "Agora escolha uma das duas cartas.";
 
-  $("btn-reveal-choices")
-    .classList.add("hidden");
-};
+
+    $("btn-reveal-choices")
+      .classList.add(
+        "hidden"
+      );
+
+  };
 
 
 // ================================================================
@@ -1192,28 +1459,36 @@ function choosePlayer(
   ) {
 
     return;
+
   }
+
 
   document
     .querySelectorAll(
       "#choices .card-wrap"
     )
-    .forEach(c => {
+    .forEach(
+      c => {
 
-      c.classList.add(
-        "disabled"
-      );
+        c.classList.add(
+          "disabled"
+        );
 
-      c.onclick = null;
-    });
+        c.onclick = null;
+
+      }
+    );
+
 
   card.classList.remove(
     "disabled"
   );
 
+
   card.classList.add(
     "chosen"
   );
+
 
   playSound(
     player.level === "craque"
@@ -1221,19 +1496,24 @@ function choosePlayer(
       : "pick"
   );
 
-  state.currentTeam.players.push(
-    player
-  );
+
+  state.currentTeam.players
+    .push(player);
+
 
   state.pool =
     state.pool.filter(
       p =>
-        p.name !==
-        player.name
+        p.name !== player.name
     );
+
 
   setTimeout(
     () => {
+
+      // ----------------------------------------------------------
+      // Equipes 1 a 4 fazem exatamente 4 escolhas.
+      // ----------------------------------------------------------
 
       if (
         state.choiceNumber === 4
@@ -1244,11 +1524,13 @@ function choosePlayer(
       } else {
 
         showDraftChoice();
+
       }
 
     },
     700
   );
+
 }
 
 
@@ -1266,6 +1548,7 @@ function makeMini(
       "div"
     );
 
+
   d.className =
     "mini-card" +
     (
@@ -1274,28 +1557,35 @@ function makeMini(
         : ""
     );
 
+
   const img =
     document.createElement(
       "img"
     );
 
-  img.src = p.image;
 
-  img.alt = p.name;
+  img.src =
+    p.image;
+
+  img.alt =
+    p.name;
+
 
   img.onload =
     () =>
-      normalizeCardImage(
-        img
-      );
+      normalizeCardImage(img);
+
 
   img.onerror = () => {
 
     img.style.visibility =
       "hidden";
+
   };
 
+
   d.appendChild(img);
+
 
   d.appendChild(
     Object.assign(
@@ -1303,11 +1593,15 @@ function makeMini(
         "div"
       ),
       {
-        className: "mini-name",
-        textContent: p.name
+        className:
+          "mini-name",
+
+        textContent:
+          p.name
       }
     )
   );
+
 
   if (isCaptain) {
 
@@ -1317,14 +1611,20 @@ function makeMini(
           "div"
         ),
         {
-          className: "captain-tag",
-          textContent: "CAPITÃO"
+          className:
+            "captain-tag",
+
+          textContent:
+            "CAPITÃO"
         }
       )
     );
+
   }
 
+
   return d;
+
 }
 
 
@@ -1337,113 +1637,21 @@ function showTeamSummary() {
   const team =
     state.currentTeam;
 
+
   state.teams[
     team.number - 1
   ] = team;
+
 
   $("team-title")
     .textContent =
       `EQUIPE ${team.number}`;
 
-  $("team-cards")
-    .innerHTML = "";
-
-  const captain = {
-
-    name: team.captain,
-
-    image:
-      `assets/captains/${slug(
-        team.captain
-      )}.png`,
-
-    level: "capitao"
-  };
 
   $("team-cards")
-    .appendChild(
-      makeMini(
-        captain,
-        true
-      )
-    );
+    .innerHTML =
+      "";
 
-  team.players.forEach(
-    p =>
-      $("team-cards")
-        .appendChild(
-          makeMini(p)
-        )
-  );
-
-  $("btn-next-team")
-    .onclick = nextTeam;
-
-  $("btn-next-team")
-    .textContent =
-      team.number === 5
-        ? "MONTAR EQUIPE 6"
-        : "PRÓXIMA EQUIPE";
-
-  show("team");
-}
-
-
-// ================================================================
-// PRÓXIMA EQUIPE
-// ================================================================
-
-function nextTeam() {
-
-  state.currentTeamIndex++;
-
-  state.currentCaptain =
-    state.captains[
-      state.currentTeamIndex
-    ];
-
-  if (
-    state.currentTeamIndex === 5
-  ) {
-
-    startTeam();
-
-  } else {
-
-    showCaptain();
-  }
-}
-
-
-// ================================================================
-// 🔒 EQUIPE 6 — FIXA
-// ================================================================
-
-function finishTeam6() {
-
-  const team = {
-
-    number: 6,
-
-    captain:
-      state.currentCaptain,
-
-    players: [
-      ...state.fixedTeam6
-    ]
-  };
-
-  state.pool = [];
-
-  state.teams[5] =
-    team;
-
-  $("team-title")
-    .textContent =
-      "EQUIPE 6";
-
-  $("team-cards")
-    .innerHTML = "";
 
   const captain = {
 
@@ -1457,7 +1665,9 @@ function finishTeam6() {
 
     level:
       "capitao"
+
   };
+
 
   $("team-cards")
     .appendChild(
@@ -1467,6 +1677,7 @@ function finishTeam6() {
       )
     );
 
+
   team.players.forEach(
     p =>
       $("team-cards")
@@ -1475,15 +1686,236 @@ function finishTeam6() {
         )
   );
 
+
+  $("btn-next-team")
+    .onclick =
+      nextTeam;
+
+
+  $("btn-next-team")
+    .textContent =
+      team.number === 5
+        ? "MONTAR EQUIPE 6"
+        : "PRÓXIMA EQUIPE";
+
+
+  show("team");
+
+}
+
+
+// ================================================================
+// EQUIPE 5 — RESTANTE
+// ================================================================
+
+function finishTeam5() {
+
+  // ==============================================================
+  // A Equipe 5 recebe automaticamente TODOS os jogadores
+  // restantes depois da Equipe 4.
+  // ==============================================================
+
+  const remainingPlayers = [
+    ...state.pool
+  ];
+
+
+  const team = {
+
+    number: 5,
+
+    captain:
+      "Henrique",
+
+    players:
+      remainingPlayers
+
+  };
+
+
+  // Remove os jogadores do pool
+  state.pool = [];
+
+
+  state.teams[4] =
+    team;
+
+
+  $("team-title")
+    .textContent =
+      "EQUIPE 5";
+
+
+  $("team-cards")
+    .innerHTML =
+      "";
+
+
+  const captain = {
+
+    name:
+      "Henrique",
+
+    image:
+      `assets/captains/${slug(
+        "Henrique"
+      )}.png`,
+
+    level:
+      "capitao"
+
+  };
+
+
+  $("team-cards")
+    .appendChild(
+      makeMini(
+        captain,
+        true
+      )
+    );
+
+
+  team.players.forEach(
+    p =>
+      $("team-cards")
+        .appendChild(
+          makeMini(p)
+        )
+  );
+
+
+  $("btn-next-team")
+    .textContent =
+      "MONTAR EQUIPE 6";
+
+
+  $("btn-next-team")
+    .onclick =
+      nextTeam;
+
+
+  show("team");
+
+}
+
+
+// ================================================================
+// PRÓXIMA EQUIPE
+// ================================================================
+
+function nextTeam() {
+
+  state.currentTeamIndex++;
+
+
+  state.currentCaptain =
+    state.captains[
+      state.currentTeamIndex
+    ];
+
+
+  if (
+    state.currentTeamIndex === 5
+  ) {
+
+    startTeam();
+
+  } else {
+
+    showCaptain();
+
+  }
+
+}
+
+
+// ================================================================
+// EQUIPE 6 — FIXA
+// ================================================================
+
+function finishTeam6() {
+
+  const team = {
+
+    number: 6,
+
+    // Allan é SOMENTE o capitão
+    captain:
+      "Allan",
+
+    // Jogadores fixos da Equipe 6
+    // NÃO inclui Allan
+    players: [
+      ...state.fixedTeam6
+    ]
+
+  };
+
+
+  state.pool = [];
+
+
+  state.teams[5] =
+    team;
+
+
+  $("team-title")
+    .textContent =
+      "EQUIPE 6";
+
+
+  $("team-cards")
+    .innerHTML =
+      "";
+
+
+  const captain = {
+
+    name:
+      "Allan",
+
+    image:
+      `assets/captains/${slug(
+        "Allan"
+      )}.png`,
+
+    level:
+      "capitao"
+
+  };
+
+
+  $("team-cards")
+    .appendChild(
+      makeMini(
+        captain,
+        true
+      )
+    );
+
+
+  team.players.forEach(
+    p =>
+      $("team-cards")
+        .appendChild(
+          makeMini(p)
+        )
+  );
+
+
   $("btn-next-team")
     .textContent =
       "VER TODAS AS EQUIPES";
+
 
   $("btn-next-team")
     .onclick =
       showFinal;
 
+
   show("team");
+
 }
 
 
@@ -1494,7 +1926,9 @@ function finishTeam6() {
 function showFinal() {
 
   $("all-teams")
-    .innerHTML = "";
+    .innerHTML =
+      "";
+
 
   state.teams.forEach(
     t => {
@@ -1504,12 +1938,15 @@ function showFinal() {
           "div"
         );
 
+
       panel.className =
         "team-panel";
+
 
       panel.innerHTML =
         `<h3>Equipe ${t.number}</h3>
          <p><b>Capitão:</b> ${t.captain}</p>`;
+
 
       t.players.forEach(
         p =>
@@ -1519,12 +1956,16 @@ function showFinal() {
           )
       );
 
+
       $("all-teams")
         .appendChild(panel);
+
     }
   );
 
+
   show("final");
+
 }
 
 
@@ -1540,7 +1981,9 @@ $("btn-formations").onclick =
 function renderFormation(n) {
 
   $("formation-tabs")
-    .innerHTML = "";
+    .innerHTML =
+      "";
+
 
   state.teams.forEach(
     t => {
@@ -1550,6 +1993,7 @@ function renderFormation(n) {
           "button"
         );
 
+
       b.className =
         "tab" +
         (
@@ -1558,8 +2002,10 @@ function renderFormation(n) {
             : ""
         );
 
+
       b.textContent =
         `EQUIPE ${t.number}`;
+
 
       b.onclick =
         () =>
@@ -1567,34 +2013,59 @@ function renderFormation(n) {
             t.number
           );
 
+
       $("formation-tabs")
         .appendChild(b);
+
     }
   );
+
 
   const t =
     state.teams[n - 1];
 
+
   const f =
     $("formation-field");
 
-  f.innerHTML = "";
+
+  f.innerHTML =
+    "";
+
 
   const all =
     t.players;
 
+
   const spots = [
 
-    ["gk", "JOEL / VINICIUS"],
+    [
+      "gk",
+      "JOEL / VINICIUS"
+    ],
 
-    ["p1", all[0]?.name],
+    [
+      "p1",
+      all[0]?.name
+    ],
 
-    ["p2", all[1]?.name],
+    [
+      "p2",
+      all[1]?.name
+    ],
 
-    ["p3", all[2]?.name],
+    [
+      "p3",
+      all[2]?.name
+    ],
 
-    ["p4", all[3]?.name]
+    [
+      "p4",
+      all[3]?.name
+    ]
+
   ];
+
 
   spots.forEach(
     ([cl, name]) => {
@@ -1604,17 +2075,23 @@ function renderFormation(n) {
           "div"
         );
 
+
       d.className =
         `player-dot ${cl}`;
+
 
       d.textContent =
         name || "—";
 
+
       f.appendChild(d);
+
     }
   );
 
+
   show("formations");
+
 }
 
 
